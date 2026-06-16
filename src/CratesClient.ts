@@ -6,25 +6,43 @@ const DEFAULT_BASE_URL = 'https://crates.io';
 const DEFAULT_USER_AGENT =
   'crates-api-client/0.0.1 (https://github.com/ElJijuna/crates-api-client)';
 
+/** Metadata emitted after each HTTP request. */
 export interface RequestEvent {
+  /** Full URL requested. */
   url: string;
+  /** HTTP method used by this client. */
   method: 'GET';
+  /** Time when the request started. */
   startedAt: Date;
+  /** Time when the request finished or failed. */
   finishedAt: Date;
+  /** Request duration in milliseconds. */
   durationMs: number;
+  /** HTTP status code when a response was received. */
   statusCode?: number;
+  /** Error thrown by fetch or by non-2xx response handling. */
   error?: Error;
 }
 
+/** Event callbacks supported by {@link CratesClient.on}. */
 export interface CratesClientEvents {
+  /** Fired once for every request, including failed and aborted requests. */
   request: (event: RequestEvent) => void;
 }
 
+/** Options for creating a {@link CratesClient}. */
 export interface CratesClientOptions {
+  /** Base URL for crates.io-compatible API endpoints. Defaults to `https://crates.io`. */
   baseUrl?: string;
+  /**
+   * User-Agent sent from Node.js requests.
+   *
+   * crates.io requires API clients to identify themselves. Browsers manage this header themselves.
+   */
   userAgent?: string;
 }
 
+/** TypeScript client for the public crates.io REST API. */
 export class CratesClient {
   private readonly baseUrl: string;
   private readonly userAgent: string;
@@ -33,11 +51,13 @@ export class CratesClient {
     CratesClientEvents[keyof CratesClientEvents][]
   > = new Map();
 
+  /** Create a client for crates.io or a compatible registry API. */
   constructor(options: CratesClientOptions = {}) {
     this.baseUrl = (options.baseUrl ?? DEFAULT_BASE_URL).replace(/\/$/, '');
     this.userAgent = options.userAgent ?? DEFAULT_USER_AGENT;
   }
 
+  /** Subscribe to request lifecycle events. */
   on<K extends keyof CratesClientEvents>(event: K, callback: CratesClientEvents[K]): this {
     const cbs = this.listeners.get(event) ?? [];
     cbs.push(callback);
@@ -109,6 +129,7 @@ export class CratesClient {
     return headers;
   }
 
+  /** Get operations scoped to one crate name. */
   crate(name: string): CrateResource {
     return new CrateResource(
       <T>(path: string, params?: Record<string, string | number | boolean>, signal?: AbortSignal) =>
@@ -117,6 +138,7 @@ export class CratesClient {
     );
   }
 
+  /** Search crates by text, pagination, and crates.io sort order. */
   async search(params: CratesSearchParams = {}, signal?: AbortSignal): Promise<CratesSearchResult> {
     return this.request<CratesSearchResult>(
       '/api/v1/crates',
