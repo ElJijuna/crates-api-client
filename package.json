@@ -1,6 +1,6 @@
 {
   "name": "crates-api-client",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "TypeScript client for the crates.io REST API",
   "homepage": "https://github.com/ElJijuna/crates-api-client#readme",
   "bugs": {
