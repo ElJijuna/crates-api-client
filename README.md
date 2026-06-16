@@ -1,5 +1,9 @@
 # crates-api-client
 
+<p align="center">
+  <img src="https://diesel.rs/images/crates_io.png" alt="crates.io logo" width="200" />
+</p>
+
 [![npm version](https://img.shields.io/npm/v/crates-api-client)](https://www.npmjs.com/package/crates-api-client)
 [![npm downloads](https://img.shields.io/npm/dm/crates-api-client)](https://www.npmjs.com/package/crates-api-client)
 [![Bundle size](https://img.shields.io/bundlephobia/minzip/crates-api-client)](https://bundlephobia.com/package/crates-api-client)
